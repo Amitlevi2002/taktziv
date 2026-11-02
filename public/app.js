@@ -180,6 +180,7 @@ function render(){
    $('qToday').textContent=fmt0(tx.filter(t=>t.d===TODAY&&cnt(t)).reduce((a,t)=>a+ +t.a,0));
    $('qWeek').textContent=fmt0(tx.filter(t=>t.d>=w&&t.d<=TODAY&&t.d>=cStart(cur)&&cnt(t)).reduce((a,t)=>a+ +t.a,0));
    $('qAvg').textContent=fmt0(spent/Math.max(dayN,1));}
+  renderPace(cur,D,left,dim,dayN,isCur);
   $('leftSub').innerHTML=!loaded?'טוען נתונים…':!TB?'הזן את המשכורת כדי לקבל תקציב.':'';$('leftSub').hidden=loaded&&!!TB;
 
   {const r=resv(cur),row=(icn,col,t,v,cls)=>`<div class="rowi${cls?' '+cls:''}"><span>${ico(icn,col,1)}${t}</span><span class="n${v<0?' m':''}">${typeof v==='string'?v:fmt(v)}</span></div>`,dd=d=>`${+d.slice(8)}.${+d.slice(5,7)}`;
@@ -278,6 +279,38 @@ function render(){
 
 
 /* ---------- what is still missing this cycle ---------- */
+/* ---------- pace: spending so far vs. an even spread to payday ---------- */
+// Time runs right to left, like the rest of the RTL interface. Spending counts the same purchases as monthData().
+function renderPace(cur,D,left,dim,dayN,isCur){
+  const box=$('pace'),base=D.tot+Math.max(left,0);
+  box.hidden=!loaded||!isCur||!(base>0);
+  if(box.hidden)return;
+  const s=cStart(cur),daily=new Array(dim+1).fill(0);
+  for(const t of D.list){if(coverOf(t)||onVisa(t))continue;const i=Math.round((new Date(t.d)-new Date(s))/864e5)+1;if(i>=1&&i<=dim)daily[i]+= +t.a}
+  const cum=[0];for(let i=1;i<=dayN;i++)cum.push(cum[i-1]+daily[i]);
+  const spent=cum[dayN],rate=spent/Math.max(dayN,1),projEnd=rate*dim;
+  const W=320,H=104,top=12,pad=8,ymax=Math.max(base,projEnd,spent)*1.08||1;
+  const X=d=>W-pad-(d/dim)*(W-2*pad),Y=v=>top+H-(v/ymax)*H;
+  const line=cum.map((v,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join(' ');
+  const over=projEnd>base;
+  const dd=k=>{const d=new Date(new Date(s).getTime()+(k-1)*864e5);return `${d.getDate()}.${d.getMonth()+1}`};
+  $('paceSvg').innerHTML=
+    `<line class="grid" x1="${pad}" x2="${W-pad}" y1="${Y(0)}" y2="${Y(0)}"/>`+
+    `<line class="cap" x1="${pad}" x2="${W-pad}" y1="${Y(base)}" y2="${Y(base)}"/>`+
+    `<text x="${pad}" y="${Y(base)-4}" direction="rtl" text-anchor="end">תקציב ${fmt(Math.round(base))}</text>`+
+    `<path class="even" d="M${X(0)} ${Y(0)} L${X(dim)} ${Y(base)}"/>`+
+    `<path class="area" d="${line} L${X(dayN)} ${Y(0)} L${X(0)} ${Y(0)} Z"/>`+
+    `<path class="act" d="${line}"/>`+
+    (dayN<dim?`<path class="proj${over?' over':''}" d="M${X(dayN)} ${Y(spent)} L${X(dim)} ${Y(projEnd)}"/>`:'')+
+    `<circle class="now" cx="${X(dayN)}" cy="${Y(spent)}" r="4.5"/>`+
+    `<text x="${W-pad}" y="${top+H+14}" text-anchor="end">${dd(1)}</text>`+
+    `<text x="${pad}" y="${top+H+14}" text-anchor="start">${dd(dim)}</text>`;
+  const t=$('paceTxt');
+  if(spent>base){t.className='warn';t.textContent=`חרגת ב-${fmt(Math.round(spent-base))}`}
+  else if(over){const k=Math.ceil(base/rate);t.className='warn';t.textContent=`בקצב הזה הכסף ייגמר ב-${dd(k)}`}
+  else{t.className='';t.textContent=`בקצב הזה יישארו כ-${fmt(Math.round(base-projEnd))} בסוף המחזור`}
+}
+
 function renderTodo(SP,D,BK){
   if(!loaded){$('todo').hidden=true;return}
   const age=BK?Math.round((new Date(TODAY)-new Date(BK.d))/864e5):99, uns=monthData(THIS).list.filter(t=>t.unsure&&!coverOf(t)).length, it=[];
