@@ -6,7 +6,7 @@ A personal budget app for an iPhone, built around one problem: logging expenses 
 
 **Demo:** open the site without a key and it runs on made-up data stored in your browser. The interface is in Hebrew.
 
-<img src="docs/home.png" width="320" alt="Home screen: money left until the next salary, budget per category">
+<img src="docs/home.png" width="320" alt="Home screen: money left until the next salary, spending pace and daily stats">
 
 ## How purchases get in
 
