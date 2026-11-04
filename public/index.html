@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="תקציב">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#1b1b19">
+<meta name="theme-color" content="#e8e7e1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=IBM+Plex+Sans+Hebrew:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
 <title>תקציב</title>
 <style>
 /* Layout: one phone column of grouped lists under a translucent bar. Adding an expense happens in a bottom sheet you can drag, flick and catch mid-flight. */
@@ -385,101 +385,242 @@ body,:root[data-theme="dark"] body{background:var(--bg)}
 .pace-k i.k-proj{border-top:2px dotted var(--accent)}
 
 /* ================================================================
-   Receipt layer: the month printed on thermal paper, lying on a dark counter.
-   Mono type, dashed rules, torn edges, black ink plus the red some thermal paper prints.
+   Dashboard layer: stone background, white rounded cards, sage green.
+   One tall hero number, a gauge, and the month's charges as a stack of cards.
    ================================================================ */
-:root,:root[data-theme="light"],:root[data-theme="dark"]{--font:"IBM Plex Mono","IBM Plex Sans Hebrew",ui-monospace,monospace;
-  --bg:#1b1b19;--surface:transparent;--paper:#fbfaf5;--ink:#1d1c1a;--sec:#6b675e;--line:rgba(29,28,26,.28);--fill:rgba(29,28,26,.06);--track:rgba(29,28,26,.12);
-  --accent:#1d1c1a;--on-accent:#fbfaf5;--warn:#c22b2b;--over:#c22b2b;--good:#1d1c1a;--g1:#fbfaf5;--g2:#fbfaf5;--g3:#fbfaf5;
-  --s0:#b4b0a6;--s1:#1d1c1a;--s2:#c22b2b;--s3:#5d5a53;--s4:#8f8b82;--s5:#3a3834;--s6:#d0ccc2;--s7:#9e2420;--s8:#77736a;--sheet:#fbfaf5;--bar:#111110}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1b1b19;--surface:transparent;--ink:#1d1c1a;--sec:#6b675e;--line:rgba(29,28,26,.28);--fill:rgba(29,28,26,.06);--track:rgba(29,28,26,.12);--accent:#1d1c1a;--on-accent:#fbfaf5;--g1:#fbfaf5;--g2:#fbfaf5;--g3:#fbfaf5;--sheet:#fbfaf5}}
-body,:root[data-theme="dark"] body{background:var(--bar) radial-gradient(#ffffff08 1px,transparent 1px) 0 0/6px 6px;color:var(--ink);font-family:var(--font)}
-/* the printer: the sticky bar is the slot the paper comes out of */
-.top{background:var(--bar)!important;color:#e9e6dc;border-bottom:0;box-shadow:inset 0 -3px 0 #000,inset 0 -5px 0 #2a2926}
-.top h1{font-weight:700;letter-spacing:.12em}
-.logo{background:#e9e6dc!important;color:var(--bar)!important;border-radius:2px}
-.mbtn{background:#2a2926!important;color:#e9e6dc!important;border-radius:2px!important}
-/* the paper */
-main.wrap,#mlist{background:var(--paper);margin-top:14px;padding-top:2rem;padding-bottom:calc(8rem + env(safe-area-inset-bottom,0px));
-  -webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 51% repeat-x,conic-gradient(from 135deg at top,#0000,#000 1deg 89deg,#0000 90deg) top/14px 51% repeat-x;
-          mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/14px 51% repeat-x,conic-gradient(from 135deg at top,#0000,#000 1deg 89deg,#0000 90deg) top/14px 51% repeat-x;
-  animation:feed .9s cubic-bezier(.3,.7,.2,1) both}
-@keyframes feed{from{transform:translateY(-60px);clip-path:inset(0 0 100% 0)}to{transform:none;clip-path:inset(0 0 0 0)}}
-main.wrap::before{content:"*** תקציב · קבלה חודשית ***";display:block;text-align:center;font-weight:700;letter-spacing:.08em;font-size:.85rem;padding-bottom:.6rem;border-bottom:1.5px dashed var(--line)}
-main.wrap::after{content:"*** תודה, נתראה במשכורת ***";display:block;text-align:center;font-size:.78rem;color:var(--sec);padding-top:1rem;border-top:1.5px dashed var(--line);margin-top:.5rem}
-/* every block prints line by line as the paper comes out */
-main.wrap>*{animation:print .5s steps(8) both;animation-delay:calc(.35s + var(--i,0) * 120ms)}
-@keyframes print{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
-/* cards become receipt sections */
-.group,.mcard,.quick .q,.pace{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;border-top:1.5px dashed var(--line)!important}
-.quick{gap:0}.quick .q{border-top:0!important;border-inline-start:1.5px dashed var(--line)!important;padding-block:.4rem}.quick .q:first-child{border-inline-start:0!important}
-.gh{font-weight:700;letter-spacing:.06em;color:var(--ink)!important}
-/* the hero: the total at the top of the receipt */
-.hero{background:transparent!important;color:var(--ink)!important;box-shadow:none!important;animation:none!important;border-radius:0!important;padding-inline:0!important}
-.hero *{color:inherit}
-.hero .big{font-family:var(--font);font-weight:700;letter-spacing:-.04em}
-.hero.bad .big{color:var(--over)!important}
-.pill,.status{background:transparent!important;border:1.5px dashed var(--line);border-radius:0!important;color:var(--ink)!important}
-.status.fast,.status.bad{border-color:var(--over);color:var(--over)!important}
-.ring circle{stroke:var(--ink)}
-#totBar{background:var(--ink)!important}
-.ico{border-radius:2px!important;background:transparent!important;border:1.5px solid var(--ink)}
-.ico .svg{stroke:var(--ink)!important}
-/* the add button: a black stamp */
-.fab{background:var(--bar)!important;color:#fbfaf5!important;border-radius:2px!important;box-shadow:6px 6px 0 #000!important;letter-spacing:.06em}
-.sheet,.dlg{border-radius:0!important;background:var(--paper)!important;color:var(--ink)}
-.splash{background:var(--bar)!important}
-.btn,.pinb{border-radius:2px!important}
-@media (prefers-reduced-motion:reduce){main.wrap,main.wrap>*{animation:none!important}}
+html:root:not([data-z]),html:root:not([data-z])[data-theme]{--font:"Heebo",system-ui,sans-serif;
+  --bg:#e8e7e1;--surface:#ffffff;--ink:#16191a;--sec:#6c7570;--line:rgba(22,25,26,.09);--fill:rgba(22,25,26,.05);--track:#e7ecE8;
+  --accent:#4c6a58;--on-accent:#fff;--good:#3c6b52;--warn:#a8691a;--over:#b5383f;--sage:#4c6a58;--sage-l:#8aa593;--good-bg:#e4efe8;--over-bg:#fbe6e6;
+  --sheet:#fff;--bar:transparent;--scrim:rgba(22,25,26,.4);
+  --s0:#b6bbb7;--s1:#8a6fb0;--s2:#8b938e;--s3:#c98a4b;--s4:#b6bbb7;--s5:#4c6a58;--s6:#c4677a;--s7:#5b7fa6;--s8:#c9a63c;color-scheme:light}
+body,:root[data-theme="dark"] body{background:var(--bg);color:var(--ink);font-family:var(--font);font-feature-settings:"tnum" 1}
+.n{font-family:inherit}
+.card,.group,.mcard{background:var(--surface)!important;border:0!important;border-radius:1.25rem!important;box-shadow:none!important}
+h2.gh{display:none}
 
-/* receipt: clear what the old gradient hero left behind */
+/* top */
+.top{position:static;background:transparent!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+.top-in{max-width:74rem;padding:1.1rem 1rem .25rem}
+.top h1{font-size:1.125rem;font-weight:700}
+.logo{width:2.25rem;height:2.25rem;border-radius:50%!important;background:var(--sage)!important;color:#fff!important}
+.mbtn{background:#fff!important;color:var(--ink)!important;border-radius:99px!important;padding:.55rem 1.1rem;font-weight:500}
+.greet{padding:.35rem .25rem .6rem}
+.greet b{display:flex;align-items:center;gap:.4rem;font-size:1.75rem;font-weight:700;letter-spacing:-.01em}
+.greet b .svg{display:none}
+.greet span{color:var(--sec);font-size:.9375rem}
+
+/* layout: one column on the phone, a 12-column board on a wide screen */
+.wrap,main.wrap{max-width:74rem;gap:.75rem;padding-bottom:calc(7rem + env(safe-area-inset-bottom,0px))}
+.rail{display:none}
+.hero{order:1}.quick{order:2}.pace{order:3}.gauge{order:4}.sal{order:5}.stackc{order:6}.recent{order:7}.asidec{order:8}#cats{order:9}.todo{order:10}.disc{order:11}
+.greet{order:0}
+main.wrap>.card,main.wrap>.group{padding:1.1rem 1.15rem}
+main.wrap>.disc{padding:0}
+@media (min-width:60rem){
+  main.wrap{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:1rem;align-items:stretch;padding-inline-start:6rem}
+  .greet{grid-column:1/-1}
+  .quick{display:contents!important}.quick[hidden]{display:none!important}
+  .quick .q{grid-column:span 3}
+  .hero{grid-column:span 3}
+  .pace{grid-column:span 6}.gauge,.sal{grid-column:span 3}
+  .stackc{grid-column:span 6}.recent,.asidec{grid-column:span 3}
+  #cats{grid-column:span 6}.todo{grid-column:span 6;align-self:start}
+  .disc{grid-column:span 6;align-self:start}
+  .rail{display:flex;position:fixed;z-index:6;inset-inline-start:max(1rem,calc(50vw - 37rem));top:6.2rem;width:3.75rem;flex-direction:column;align-items:center;gap:.5rem;background:#fff;border-radius:99px;padding:.6rem 0}
+  .rail a{width:2.75rem;height:2.75rem;border-radius:50%;display:grid;place-items:center;color:var(--ink);transition:background .15s}
+  .rail a:hover{background:var(--fill)}
+  .rail a:first-child{background:var(--ink);color:#fff}
+  .rail .svg{width:1.25rem;height:1.25rem;stroke-width:1.7}
+}
+
+/* the green card: what is left */
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--sage-l),var(--sage) 75%)!important;color:#fff!important;border-radius:1.25rem!important;padding:1.1rem 1.15rem 1.25rem!important;margin:0;box-shadow:none!important;animation:none!important;gap:.15rem;justify-content:center}
+.hero.bad{background:linear-gradient(135deg,#d07a7a,var(--over) 75%)!important}
 .hero::before,.hero::after{display:none!important}
-.hero .big,.hero .big.neg{color:var(--ink)!important;text-shadow:none!important}
-.hero .cap,.hero .sub,.hero .hi{color:var(--sec)!important}
-.hero .hi b{color:var(--ink)!important}
-.hero button.pill,.hero .msg{color:var(--ink)!important}
-.hero .bar{background:var(--track)!important}.hero .bar i{background:var(--ink)!important}.hero .bar b{background:var(--over)!important}
-.ring .r0,.ring .r2{stroke:var(--track)!important}.ring .r1{stroke:var(--ink)!important}.ring .r3{stroke:var(--over)!important}
-.ring text{fill:var(--ink)!important}
-.status i{background:var(--ink)!important}.status.fast i,.status.bad i{background:var(--over)!important}
+.hero .cap{color:rgba(255,255,255,.88)!important;font-size:.9375rem}
+.hero .big,.hero .big.neg{color:#fff!important;font-size:clamp(2.6rem,13vw,3.4rem);font-weight:700;letter-spacing:-.03em;text-align:start;justify-content:flex-end;text-shadow:none!important}
+@media (min-width:60rem){.hero .big,.hero .big.neg{font-size:2.1rem}}
+.hero .bar,.hero .ring,.hero .sub:empty{display:none}
+.hero .sub{color:rgba(255,255,255,.85)!important}
+.hero .msg{color:#fff;font-weight:500}
+.wave{position:absolute;left:-.5rem;bottom:-.3rem;width:36%;height:55%;fill:none;stroke:rgba(255,255,255,.45);stroke-width:2.5;stroke-linecap:round;pointer-events:none}
 
-/* receipt: one ink, red only when it matters. html:root outranks the earlier theme blocks. */
-html:root,html:root[data-theme]{--warn:#c22b2b;--over:#c22b2b;--s0:#b4b0a6;--s1:#1d1c1a;--s2:#c22b2b;--s3:#5d5a53;--s4:#8f8b82;--s5:#3a3834;--s6:#d0ccc2;--s7:#9e2420;--s8:#77736a}
-.bar{border-radius:0!important;height:.45rem}
-.bar i{border-radius:0!important}
-.bar i:not([style*="--over"]):not([style*="--warn"]){background:var(--ink)!important}
-.bar i[style*="--warn"]{background:repeating-linear-gradient(-45deg,var(--over) 0 3px,transparent 3px 6px)!important}
-.left.warn,.left.over,.n.over{color:var(--over)!important}
-.status i{box-shadow:none!important}
+/* the small stat cards */
+.quick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
+.quick .q{position:relative;background:#fff!important;border:0!important;border-radius:1.25rem!important;box-shadow:none!important;padding:.85rem .9rem;min-height:5.25rem;justify-content:center}
+.quick .q span{font-size:.8125rem;color:var(--sec)}
+.quick .q b{font-size:1.125rem;font-weight:700;color:var(--ink)}
+.spark{display:none}
+@media (min-width:60rem){.quick .q{padding:1rem 1.15rem}.quick .q b{font-size:1.4rem}.spark{display:flex;position:absolute;left:1rem;top:50%;transform:translateY(-50%);height:2.4rem;align-items:flex-end;gap:3px;direction:ltr}
+ .spark i{width:5px;border-radius:3px;background:var(--sage);display:block}.spark i.off{background:#dde5df}}
+
+/* pace */
+.pace{padding:1.1rem 1.15rem!important;border:0!important}
+.pace-h{align-items:center;flex-wrap:wrap}.pace-h b{font-size:1.125rem;font-weight:700}
+.status{display:inline-flex;background:transparent!important;color:var(--good)!important;padding:0;margin:0;font-size:.875rem;font-weight:500}
+.status i{background:var(--good)!important;box-shadow:none!important}.status.fast{color:var(--warn)!important}.status.fast i{background:var(--warn)!important}.status.bad{color:var(--over)!important}.status.bad i{background:var(--over)!important}
+.pace-head{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}.pace-head b{font-size:1.125rem;font-weight:700}
+.floats{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.5rem}
+.floats .pill{display:flex;width:auto;margin:0;background:#fff!important;color:var(--ink)!important;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:.8rem;padding:.6rem .75rem;box-shadow:0 8px 22px -10px rgba(22,25,26,.25);font-size:.8125rem;font-weight:500;align-items:center;justify-content:flex-start}
+.floats .pill .svg{color:var(--sage);width:1rem;height:1rem}
+.floats .pill .n{font-weight:700}
+#paceTxt{display:block;font-size:.8125rem;color:var(--sec);margin-top:.35rem}#paceTxt.warn{color:var(--over);font-weight:500}
+#paceSvg .act{stroke:var(--sage);stroke-width:2.5}#paceSvg .area{fill:var(--sage);opacity:.09}#paceSvg .now{fill:var(--sage);stroke:#fff}#paceSvg .proj{stroke:var(--sage-l)}#paceSvg .proj.over{stroke:var(--over)}
+.pace-k{font-size:.75rem;color:var(--sec)}.pace-k i{border-top-color:var(--sage)}.pace-k i.k-proj{border-top-color:var(--sage-l)}
+
+/* gauge */
+.gauge h3,.recent h3,.stackc h3,.asidec h3,.sal h3{margin:0;font-size:1.125rem;font-weight:700}
+.gauge .small{color:var(--sec);font-size:.8125rem;margin-top:.15rem}
+.gauge .amt{font-size:1.75rem;font-weight:700;color:var(--sage);letter-spacing:-.02em}
+.gauge .note2{font-size:.8125rem;color:var(--sec)}
+.gauge svg{display:block;width:100%;max-width:13rem;margin:.5rem auto 0;direction:ltr}
+.gauge .g0{fill:none;stroke:#e4ebe6;stroke-width:15}
+.gauge .g1{fill:none;stroke:url(#gg);stroke-width:15;transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1)}
+.gauge .tick{stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
+.gauge text{font:700 19px var(--font);fill:var(--ink)}
+.gauge.over .amt{color:var(--over)}.gauge.over .g1{stroke:var(--over)}
+
+/* salary */
+.sal{text-align:center;display:flex;flex-direction:column;justify-content:center}
+.sal .av{width:3.75rem;height:3.75rem;border-radius:50%;background:#efe8da;color:var(--sage);display:grid;place-items:center;margin:0 auto .5rem}
+.sal .av .svg{width:1.6rem;height:1.6rem}
+.sal .amt{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;margin:.1rem 0 .1rem}
+.sal .small{color:var(--sec);font-size:.8125rem}
+.sal .three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.25rem;margin-top:.85rem}
+.sal .three span{display:block;font-size:.75rem;color:var(--sec)}
+.sal .three b{font-size:.9375rem;font-weight:700}
+
+/* the stack of charges */
+.stackc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:.75rem;align-items:center;overflow:hidden}
+.stackc p{color:var(--sec);font-size:.875rem;margin:.4rem 0 .9rem}
+.cta{display:inline-flex;background:linear-gradient(135deg,var(--sage-l),var(--sage));color:#fff!important;border-radius:.75rem;padding:.65rem 1rem;font-weight:500;font-size:.875rem}
+.pile{position:relative;height:12.5rem;perspective:60rem;background:#eaf0ec;border-radius:1rem}
+.payc{position:absolute;inset-inline-start:50%;top:50%;width:11.5rem;height:6.8rem;margin:-3.4rem -5.75rem 0;border:0;border-radius:.8rem;padding:.7rem .85rem;display:flex;flex-direction:column;justify-content:space-between;text-align:start;color:#fff;
+  transform-style:preserve-3d;transform:rotateX(52deg) rotateZ(-32deg) translateZ(var(--z));transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s;box-shadow:0 16px 18px -8px rgba(22,25,26,.35);animation:fan .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes fan{from{transform:rotateX(52deg) rotateZ(-32deg) translateZ(0)}}
+.payc.a{--z:3.9rem;background:linear-gradient(135deg,rgba(214,221,216,.92),rgba(180,192,184,.92));color:var(--ink);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.payc.b{--z:1.9rem;background:linear-gradient(135deg,var(--sage-l),var(--sage))}
+.payc.c{--z:0rem;background:linear-gradient(135deg,#3a4446,#1f2627)}
+.payc.on{--z:5.8rem;box-shadow:0 26px 26px -10px rgba(22,25,26,.45);z-index:2}
+.payc.b.on{--z:5rem}.payc.c.on{--z:4.4rem}
+.payc span{font-size:.8125rem;opacity:.9}.payc b{font-size:1.2rem;font-weight:700;direction:ltr;text-align:end}
+.payc small{height:.55rem;width:1.1rem;border-radius:.2rem;background:rgba(255,255,255,.55);align-self:flex-end}
+
+/* recent */
+.recent h3{margin-bottom:.75rem}
+.rec{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.65rem;align-items:center;padding:.45rem 0}
+.rec i{width:.25rem;height:2.1rem;border-radius:2px;background:var(--c)}
+.rec b{display:block;font-weight:500;font-size:.9375rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec small{color:var(--sec);font-size:.75rem}
+.rec span{background:var(--good-bg);color:var(--good);border-radius:99px;padding:.2rem .6rem;font-size:.8125rem;font-weight:500;white-space:nowrap}
+.alltx{display:block;margin-top:.4rem;color:var(--sage);font-size:.875rem;font-weight:500}
+
+/* set aside */
+.asidec{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem}
+.asidec>.svg{width:3.25rem;height:3.25rem;color:var(--sage);stroke-width:1.2;margin-bottom:.35rem}
+.asidec p{margin:0 0 .7rem;color:var(--sec);font-size:.875rem}
+.asidec.done>.svg{color:var(--good)}
+
+/* budget rows */
+#cats{padding:.5rem 1.15rem!important}
+#cats::before{content:"תקציב לפי סעיף";display:block;font-size:1.125rem;font-weight:700;padding:.6rem 0 .2rem}
+.crow,.rowi,.trow,.disc summary,.mhead{padding-inline:0}
+#cats .crow{padding-block:.7rem}
+.crow:active,.crow.on{background:transparent}
+.crow.on .cn{font-weight:700}
+.rowi+.rowi::before,.crow+.crow::before,.trow+.trow::before,.empty+.rowi::before{inset-inline:0}
+.ico{border-radius:.6rem!important;background:color-mix(in srgb,var(--c) 16%,#fff)!important;color:var(--c)!important}
+.bar{height:.4rem;background:#edf1ee;border-radius:99px!important}
+.bar i{border-radius:99px!important;background-image:none!important}
+.bar b{background:var(--ink);opacity:.55;width:2px}
+.crow .left{font-size:.75rem}
+.todo{padding:.4rem 1.15rem!important}.todo h3{padding-inline:0;font-size:1.125rem}.todo h3 .svg{display:none}.todo .rowi .go{color:var(--sage)}
+main.wrap>.disc summary{padding:.85rem 1.15rem}main.wrap>.disc .in{border-top:1px solid var(--line);padding-inline:1.15rem}
+.foot{margin-inline:1.15rem}.fadd,.padd{padding-inline:1.15rem}main.wrap>.disc .gh{display:block;margin-inline:1.15rem}
+.fab{background:linear-gradient(135deg,var(--sage-l),var(--sage))!important;color:#fff!important;border-radius:99px!important;box-shadow:0 14px 28px -10px rgba(40,60,48,.7)!important}
+.fab::after{display:none}
+.sheet,.dlg{background:#fff!important;border-radius:1.5rem 1.5rem 0 0!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+.chips input:checked+span{background:var(--sage)!important;color:#fff}
+.tlink{color:var(--sage)}.btn{color:var(--sage);border-radius:.75rem}
+.sw:checked{background:var(--sage)}
+.splash,.pinw{background:linear-gradient(135deg,var(--sage-l),var(--sage))!important}
+.pinb{color:var(--sage)}
+.toast{background:#fff;color:var(--ink)}
+.seg i{background:#fff}
+.conf{display:none}
+@media (prefers-reduced-motion:reduce){.payc{animation:none}.gauge .g1{transition:none}}
 </style>
 </head>
 <body>
 <div class="splash" id="splash" aria-hidden="true"><div class="splash-in"><span class="splash-logo"><span data-ic="wallet"></span></span><b>תקציב</b></div></div>
 <header class="top"><div class="top-in"><h1><span class="logo" data-ic="wallet"></span>תקציב</h1><button type="button" class="mbtn press" id="mBtn"><span data-ic="cal"></span>חודשים</button></div></header>
 
+<nav class="rail" aria-label="ניווט בעמוד"><a href="#hero" aria-label="סקירה"><span data-ic="home"></span></a><a href="#cats" aria-label="תקציב לפי סעיף"><span data-ic="pie"></span></a><a href="#salBox" aria-label="המשכורת"><span data-ic="wallet"></span></a><a href="#stackc" aria-label="מה יורד לבד"><span data-ic="card"></span></a><a href="#setBox" aria-label="הגדרות"><span data-ic="sliders"></span></a></nav>
 <main class="wrap">
+  <div class="greet"><b id="hello"></b><span id="dayOf"></span></div>
+
   <section class="hero" id="hero">
-    <div class="hi"><b id="hello"></b><span id="dayOf"></span></div>
     <div class="cap" id="leftLbl">נשאר עד המשכורת הבאה</div>
     <div class="herorow"><div class="big n" id="left" aria-live="polite">…</div>
       <svg class="ring" id="ring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" class="r0"/><circle cx="32" cy="32" r="27" class="r1" id="ringUse"/><circle cx="32" cy="32" r="20" class="r2"/><circle cx="32" cy="32" r="20" class="r3" id="ringDay"/><text x="32" y="36" text-anchor="middle" id="ringTxt"></text></svg></div>
-    <div style="display:flex;gap:.5rem;flex-wrap:wrap"><div class="status" id="status" hidden></div><div class="pill" id="perDay" hidden></div><button type="button" class="pill press" id="adjBtn"><span data-ic="scale"></span><span id="bankLbl">יתרה בבנק</span></button></div>
     <div class="sub" id="leftSub"></div>
     <span class="bar lg"><i id="totBar"></i><b id="totPace" hidden></b></span>
     <div class="msg" id="msg" role="status" hidden></div>
+    <svg class="wave" viewBox="0 0 120 50" aria-hidden="true"><path d="M2 42C14 42 16 10 26 10s10 26 20 26 12-30 26-30 14 20 46 18"/></svg>
   </section>
 
   <section class="quick" id="quick" hidden>
-    <div class="q"><span>היום</span><b class="n" id="qToday"></b></div>
-    <div class="q"><span>7 ימים אחרונים</span><b class="n" id="qWeek"></b></div>
-    <div class="q"><span>ממוצע ליום</span><b class="n" id="qAvg"></b></div>
+    <div class="q"><span>היום</span><b class="n" id="qToday"></b><div class="spark" id="spToday" aria-hidden="true"></div></div>
+    <div class="q"><span>7 ימים אחרונים</span><b class="n" id="qWeek"></b><div class="spark" id="spWeek" aria-hidden="true"></div></div>
+    <div class="q"><span>ממוצע ליום</span><b class="n" id="qAvg"></b><div class="spark" id="spAvg" aria-hidden="true"></div></div>
   </section>
 
   <!-- pace: money spent so far in the cycle against an even spread to payday, and where today's pace ends up -->
-  <section class="group pace" id="pace" hidden>
-    <div class="pace-h"><b>הקצב שלך</b><span id="paceTxt"></span></div>
+  <section class="card pace" id="pace" hidden>
+    <div class="pace-head"><b>הקצב שלך</b><div class="status" id="status" hidden></div></div>
+    <div class="floats"><div class="pill" id="perDay" hidden></div><button type="button" class="pill press" id="adjBtn"><span data-ic="scale"></span><span id="bankLbl">יתרה בבנק</span></button></div>
     <svg id="paceSvg" viewBox="0 0 320 132" role="img" aria-labelledby="paceTxt"></svg>
+    <span id="paceTxt"></span>
     <div class="pace-k"><span><i class="k-act"></i>הוצאת עד היום</span><span><i class="k-even"></i>קצב אחיד</span><span><i class="k-proj"></i>אם תמשיך ככה</span></div>
+  </section>
+
+  <section class="card gauge" id="gauge" hidden>
+    <h3>הוצאות</h3>
+    <div class="small">במחזור הזה</div>
+    <div class="amt n" id="gAmt"></div>
+    <div class="note2" id="gNote"></div>
+    <svg viewBox="0 0 160 92" role="img" aria-labelledby="gNote"><defs><linearGradient id="gg" x1="0" x2="1"><stop offset="0" stop-color="#8aa593"/><stop offset="1" stop-color="#4c6a58"/></linearGradient></defs>
+      <path class="g0" d="M15 78a65 65 0 0 1 130 0"/><path class="g1" id="gArc" d="M15 78a65 65 0 0 1 130 0" stroke-dasharray="204.2" stroke-dashoffset="204.2"/>
+      <line class="tick" id="gTick"/><text x="80" y="78" text-anchor="middle" id="gPct"></text></svg>
+  </section>
+
+  <section class="card sal" id="sal" hidden>
+    <div class="av"><span data-ic="wallet"></span></div>
+    <h3>המשכורת</h3>
+    <div class="amt n" id="sAmt"></div>
+    <div class="three"><div><span>לצד</span><b class="n" id="sAside"></b></div><div><span>להשקעות</span><b class="n" id="sInv"></b></div><div><span>למחיה</span><b class="n" id="sLive"></b></div></div>
+  </section>
+
+  <section class="card stackc" id="stackc" hidden>
+    <div><h3>מה יורד לבד</h3><p>חיובים שכבר ידועים החודש. הם יורדים מהכסף למחיה מראש.</p><button type="button" class="cta press" id="pileBtn">הזנת חיוב הויזה</button></div>
+    <div class="pile" id="pile">
+      <button type="button" class="payc c" data-p="p"><span>תשלומים</span><small></small><b class="n" id="pP"></b></button>
+      <button type="button" class="payc b" data-p="f"><span>הוראות קבע</span><small></small><b class="n" id="pF"></b></button>
+      <button type="button" class="payc a" data-p="v"><span>ויזה</span><small></small><b class="n" id="pV"></b></button>
+    </div>
+  </section>
+
+  <section class="card recent" id="recent" hidden>
+    <h3>הוצאות אחרונות</h3>
+    <div id="recList"></div>
+    <button type="button" class="tlink alltx" id="allTx">לכל ההוצאות</button>
+  </section>
+
+  <section class="card asidec" id="asidec" hidden>
+    <span data-ic="shield"></span>
+    <h3 id="aTitle"></h3>
+    <p id="aText"></p>
+    <button type="button" class="cta press" id="aBtn"></button>
   </section>
 
   <section class="group todo" id="todo" hidden></section>
@@ -547,7 +688,7 @@ html:root,html:root[data-theme]{--warn:#c22b2b;--over:#c22b2b;--s0:#b4b0a6;--s1:
     </form>
   </details>
 
-  <details class="group disc">
+  <details class="group disc" id="setBox">
     <summary><span class="l"><i data-ico="sliders" data-c="--s0"></i>הגדרות</span></summary>
     <div class="in">
       <label class="rowi" for="income"><span>משכורת ברירת מחדל</span><input type="number" id="income" inputmode="numeric" min="0" step="100"></label>
@@ -613,8 +754,8 @@ window.fetch=async(u,o)=>{o=o||{};if(typeof u!=='string'||u.indexOf('/api/')!==0
     pin=await ask(pin?'קוד שגוי, נסה שוב':'הכנס קוד');try{localStorage.setItem('tk_pin',pin)}catch(e){}}
   return of(u,o)};})();
 </script>
-<script src="demo.js?v=1"></script>
-<script src="app.js?v=19"></script>
+<script src="demo.js?v=2"></script>
+<script src="app.js?v=20"></script>
 <script>
 (()=>{const a=document.getElementById('adIn'),d=document.getElementById('adlg'),r=document.documentElement.style;
 a.focus=function(o){if(o&&o.preventScroll)return;HTMLElement.prototype.focus.call(this,o)};

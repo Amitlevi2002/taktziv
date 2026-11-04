@@ -1,7 +1,7 @@
 // Demo mode: opening the app without a key (?k=...) runs it on made-up data kept in this browser.
 // It answers the same requests as /api/state and /api/tx, so app.js does not know the difference.
 (() => {
-  const KEY = 'taktziv-demo-v1';
+  const KEY = 'taktziv-demo-v2';
   const pad = (n) => String(n).padStart(2, '0');
   const iso = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
   const id = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -15,10 +15,10 @@
     const daysIn = Math.max(1, Math.round((now - start) / 864e5));
 
     const cfg = {
-      income: 11500, cut: 50, inv: 90, payday, start: key, starts: {}, incomes: {}, asides: {}, asideDone: {}, plans: [], rules: {},
+      income: 11500, cut: 50, inv: 90, payday, start: key, starts: {}, incomes: {}, asides: {}, asideDone: {}, plans: [{ t: 'מקרר חדש', a: 320, n: 12, s: key, day: 12, cat: 'once' }], rules: {},
       budgets: { fuel: 600, super: 1100, eat: 450, shop: 400, cash: 200 },
       fixed: [
-        { n: 'חדר כושר', a: 249, day: 1 }, { n: 'סלולר ואינטרנט', a: 159, day: 11 },
+        { n: 'חדר כושר', a: 249, day: 1, nv: true }, { n: 'סלולר ואינטרנט', a: 159, day: 11 },
         { n: 'Spotify', a: 23.9, day: 14 }, { n: 'Netflix', a: 54.9, day: 8 }, { n: 'iCloud+', a: 3.9, day: 18 },
       ],
     };

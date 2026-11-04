@@ -181,6 +181,7 @@ function render(){
    $('qWeek').textContent=fmt0(tx.filter(t=>t.d>=w&&t.d<=TODAY&&t.d>=cStart(cur)&&cnt(t)).reduce((a,t)=>a+ +t.a,0));
    $('qAvg').textContent=fmt0(spent/Math.max(dayN,1));}
   renderPace(cur,D,left,dim,dayN,isCur);
+  renderDash(SP,D,left,dayN,isCur,pace);
   $('leftSub').innerHTML=!loaded?'טוען נתונים…':!TB?'הזן את המשכורת כדי לקבל תקציב.':'';$('leftSub').hidden=loaded&&!!TB;
 
   {const r=resv(cur),row=(icn,col,t,v,cls)=>`<div class="rowi${cls?' '+cls:''}"><span>${ico(icn,col,1)}${t}</span><span class="n${v<0?' m':''}">${typeof v==='string'?v:fmt(v)}</span></div>`,dd=d=>`${+d.slice(8)}.${+d.slice(5,7)}`;
@@ -310,6 +311,45 @@ function renderPace(cur,D,left,dim,dayN,isCur){
   else if(over){const k=Math.ceil(base/rate);t.className='warn';t.textContent=`בקצב הזה הכסף ייגמר ב-${dd(k)}`}
   else{t.className='';t.textContent=`בקצב הזה יישארו כ-${fmt(Math.round(base-projEnd))} בסוף המחזור`}
 }
+
+/* ---------- the board: gauge, salary, the stack of charges, latest expenses, money set aside ---------- */
+let pileOn=null;
+function renderDash(SP,D,left,dayN,isCur,pace){
+  const show=loaded&&isCur;
+  for(const id of ['gauge','sal','stackc','recent','asidec']) $(id).hidden=!show;
+  if(!show) return;
+  // gauge: how much of the money for this cycle is already gone, with a tick for how far the cycle has gone
+  {const base=D.tot+Math.max(left,0),use=base?Math.min(D.tot/base,1):0,LEN=204.2,over=left<0;
+   $('gauge').classList.toggle('over',over);
+   $('gAmt').textContent=fmt0(D.tot);
+   $('gNote').textContent=over?`חריגה של ${fmt0(-left)}`:use>pace+.08?`${Math.round((use-pace)*100)}% מעל הקצב`:`בתוך התקציב, יום ${dayN}`;
+   $('gArc').style.strokeDashoffset=String(LEN*(1-use));
+   const a=Math.PI*(1-pace),x=80+Math.cos(a),cx=80+65*Math.cos(a),cy=78-65*Math.sin(a),ox=80+78*Math.cos(a),oy=78-78*Math.sin(a);
+   $('gTick').setAttribute('x1',cx.toFixed(1));$('gTick').setAttribute('y1',cy.toFixed(1));$('gTick').setAttribute('x2',ox.toFixed(1));$('gTick').setAttribute('y2',oy.toFixed(1));
+   $('gPct').textContent=Math.round(use*100)+'%';}
+  // salary
+  $('sAmt').textContent=fmt0(SP.inc);
+  $('sAside').textContent=fmt0(SP.cutAmt);$('sInv').textContent=fmt0(SP.invest);$('sLive').textContent=fmt0(SP.living);
+  // the charges that leave the bank on their own
+  {const r=resv(THIS);$('pV').textContent=fmt0(r.card);$('pF').textContent=fmt0(r.fb+r.fr);$('pP').textContent=fmt0(r.p);
+   document.querySelectorAll('.payc').forEach(c=>c.classList.toggle('on',c.dataset.p===pileOn));}
+  // latest expenses
+  {const list=D.list.slice().sort((a,b)=>(b.d.localeCompare(a.d))||(txTime(b)-txTime(a))).slice(0,4);
+   $('recList').innerHTML=list.map(t=>{const c=CAT[nc(t.cat)];return `<div class="rec"><i style="--c:var(${c.c})"></i><div><b>${esc(t.note||c.name)}</b><small>${+t.d.slice(8)}.${+t.d.slice(5,7)}</small></div><span class="n">${fmt(+t.a)}</span></div>`}).join('')||'<p class="empty">עדיין אין הוצאות במחזור הזה.</p>';}
+  // money set aside
+  {const done=!!cfg.asideDone[THIS];$('asidec').classList.toggle('done',done);
+   $('aTitle').textContent=done?'הכסף בצד':'שמים בצד';
+   $('aText').innerHTML=done?`העברת <span class="n">${fmt0(SP.cutAmt)}</span> החודש`:`להעביר <span class="n">${fmt0(SP.cutAmt)}</span> מהמשכורת`;
+   $('aBtn').textContent=done?'ביטול הסימון':'העברתי';}
+  // mini bars in the stat cards
+  {const dayTotal=k=>{const d=new Date(new Date(TODAY)-k*864e5),s=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());return tx.filter(t=>t.d===s&&!coverOf(t)&&!onVisa(t)).reduce((a,t)=>a+ +t.a,0)};
+   const week=[6,5,4,3,2,1,0].map(dayTotal),mx=Math.max(...week,1),bars=(arr,m)=>arr.map(v=>`<i class="${v?'':'off'}" style="height:${Math.max(v/m*100,14)}%"></i>`).join('');
+   $('spToday').innerHTML=bars(week.slice(-3),mx);$('spWeek').innerHTML=bars(week,mx);$('spAvg').innerHTML=bars(week.map(()=>D.tot/Math.max(dayN,1)),mx);}
+}
+$('pile').addEventListener('click',e=>{const c=e.target.closest('.payc');if(!c)return;pileOn=pileOn===c.dataset.p?null:c.dataset.p;document.querySelectorAll('.payc').forEach(x=>x.classList.toggle('on',x.dataset.p===pileOn))});
+$('pileBtn').addEventListener('click',()=>{$('salBox').open=true;$('salBox').scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>$('mvisa').focus({preventScroll:true}),350)});
+$('aBtn').addEventListener('click',()=>{const s=$('asideSw');s.checked=!s.checked;s.dispatchEvent(new Event('change',{bubbles:true}))});
+$('allTx').addEventListener('click',()=>openMonths(THIS));
 
 function renderTodo(SP,D,BK){
   if(!loaded){$('todo').hidden=true;return}
