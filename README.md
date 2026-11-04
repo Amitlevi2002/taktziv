@@ -18,6 +18,10 @@ Typed in the app ─────────────────────
 2. **Screenshots.** Not every purchase goes through Apple Pay. A screenshot of the card company's transaction list goes through Live Text, and `lib/ocr.js` rebuilds the rows from that text. Live Text is messy: it reads the ₪ sign as letters or as an extra digit, drops decimal points, and changes the order of the columns. The parser handles each of these, and anything already in the app is skipped (`newRows`).
 3. **By hand,** for cash.
 
+## Accessibility, languages and legal pages
+
+Every page has an accessibility menu (text size, high contrast, highlighted links, readable font, stopped animations, grayscale), a skip link and full keyboard use, built toward Israeli Standard 5568 (WCAG 2.0 AA). The screens were checked with axe. A button switches between Hebrew and English, including the page direction, and there are privacy, terms and accessibility statement pages (`public/site-kit.js`, `public/site-i18n.js`).
+
 ## Things I cared about
 
 - **Never lose a purchase.** Before anything else, an Apple Pay purchase is written to its own small file in an inbox. If the main write fails or two writes race, the next time the app opens `recover()` puts the purchase back. Settings and purchases are stored in separate files, so saving a setting can never overwrite an expense.
