@@ -1,5 +1,7 @@
 # Taktziv (תקציב)
 
+**Live demo:** https://taktziv-brown.vercel.app
+
 A personal budget app for an iPhone, built around one problem: logging expenses by hand never lasts. Here, a purchase made with Apple Pay shows up in the budget on its own a second later, sorted into a category.
 
 **Demo:** open the site without a key and it runs on made-up data stored in your browser. The interface is in Hebrew.
