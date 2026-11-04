@@ -33,7 +33,9 @@ const IP={
  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
  moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
  scale:'<path d="M12 3v18M7 21h10M3 7h18M6 7l-3 7a3 3 0 0 0 6 0Zm12 0-3 7a3 3 0 0 0 6 0Z"/>',
- day:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>'
+ day:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+ bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/>'
 };
 const ic=(n,c)=>`<svg class="svg" viewBox="0 0 24 24" aria-hidden="true">${IP[n]}</svg>`;
 const ico=(n,c,sm)=>`<span class="ico${sm?' sm':''}" style="--c:var(${c})">${ic(n)}</span>`;
@@ -351,6 +353,21 @@ $('pileBtn').addEventListener('click',()=>{$('salBox').open=true;$('salBox').scr
 $('aBtn').addEventListener('click',()=>{const s=$('asideSw');s.checked=!s.checked;s.dispatchEvent(new Event('change',{bubbles:true}))});
 $('allTx').addEventListener('click',()=>openMonths(THIS));
 
+/* ---------- search: any expense, from any cycle, opens its month ---------- */
+function runSearch(){
+  const q=$('q').value.trim().toLowerCase(),box=$('qRes');
+  if(!q){box.hidden=true;return}
+  const hit=tx.filter(t=>t.d&&((t.note||'').toLowerCase().includes(q)||CAT[nc(t.cat)].name.includes(q))).sort((a,b)=>b.d.localeCompare(a.d)).slice(0,8);
+  box.innerHTML=hit.map(t=>{const c=CAT[nc(t.cat)];return `<button type="button" data-m="${cyc(t.d)}"><i style="--c:var(${c.c})"></i><span><b>${esc(t.note||c.name)}</b><small>${+t.d.slice(8)}.${+t.d.slice(5,7)} · ${c.name}</small></span><span class="n">${fmt(+t.a)}</span></button>`}).join('')||'<p>לא נמצאו הוצאות</p>';
+  box.hidden=false;
+}
+$('q').addEventListener('input',runSearch);
+$('q').addEventListener('focus',runSearch);
+$('q').addEventListener('keydown',e=>{if(e.key==='Escape'){$('q').value='';$('qRes').hidden=true}});
+$('qRes').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;$('qRes').hidden=true;$('q').value='';openMonths(b.dataset.m)});
+document.addEventListener('click',e=>{if(!e.target.closest('.search'))$('qRes').hidden=true});
+$('bell').addEventListener('click',()=>{const t=$('todo');if(t.hidden){toast('הכל מסודר החודש');return}t.scrollIntoView({behavior:'smooth',block:'center'})});
+
 function renderTodo(SP,D,BK){
   if(!loaded){$('todo').hidden=true;return}
   const age=BK?Math.round((new Date(TODAY)-new Date(BK.d))/864e5):99, uns=monthData(THIS).list.filter(t=>t.unsure&&!coverOf(t)).length, it=[];
@@ -360,6 +377,7 @@ function renderTodo(SP,D,BK){
   if(!BK||age>7) it.push(['scale','--s4',BK?`לעדכן יתרה בבנק (עודכנה לפני ${age} ימים)`:'לעדכן יתרה בבנק','bank']);
   if(uns) it.push(['spark','--s1',`לבדוק קטגוריה ב-${uns} קניות`,'months']);
   $('todo').hidden=!it.length;
+  $('bellDot').hidden=!it.length;
   $('todo').innerHTML=`<h3>${ic('check')}מה חסר החודש</h3>`+it.map(x=>`<div class="rowi press" data-todo="${x[3]}"><span>${ico(x[0],x[1],1)}${x[2]}</span><span class="go">‹</span></div>`).join('');
 }
 /* ---------- months menu: every cycle from the start, with its charges ---------- */

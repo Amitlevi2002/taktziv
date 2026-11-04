@@ -549,16 +549,69 @@ main.wrap>.disc summary{padding:.85rem 1.15rem}main.wrap>.disc .in{border-top:1p
 .seg i{background:#fff}
 .conf{display:none}
 @media (prefers-reduced-motion:reduce){.payc{animation:none}.gauge .g1{transition:none}}
+
+/* header: greeting, search and icons on one line */
+.main-top .top-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem;padding:1.1rem 1rem .75rem}
+.who{display:flex;align-items:center;gap:.75rem}
+.who h1{display:flex;align-items:center;gap:.4rem;margin:0;font-size:1.5rem;font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.who h1 .svg{display:none}
+.who small{color:var(--sec);font-size:.9375rem}
+.logo{width:2.75rem;height:2.75rem;flex:none}.logo .svg{width:1.25rem;height:1.25rem}
+.tools{display:flex;align-items:center;gap:.5rem;flex:1 1 100%}
+.search{position:relative;flex:1;min-width:0}
+.search input{width:100%;height:2.75rem;border:0;border-radius:99px;background:#fff;padding-inline:1.1rem 3rem;font-size:.9375rem;outline-offset:2px}
+.search input::-webkit-search-cancel-button{display:none}
+.search input::placeholder{color:var(--sec);opacity:1}
+.sico{position:absolute;inset-inline-end:.3rem;top:.3rem;width:2.15rem;height:2.15rem;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;pointer-events:none}
+.sico .svg{width:1rem;height:1rem}
+.round{position:relative;width:2.75rem;height:2.75rem;flex:none;border-radius:50%;background:#fff;display:grid;place-items:center}
+.round i{position:absolute;top:.6rem;inset-inline-end:.65rem;width:.55rem;height:.55rem;border-radius:50%;background:var(--over);box-shadow:0 0 0 2px #fff}
+.mbtn{height:2.75rem;flex:none;display:flex;align-items:center}
+.qres{position:absolute;z-index:20;inset-inline:0;top:calc(100% + .4rem);background:#fff;border-radius:1rem;box-shadow:0 18px 44px -12px rgba(22,25,26,.35);padding:.4rem;max-height:20rem;overflow:auto}
+.qres button{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:.6rem;align-items:center;width:100%;padding:.55rem .6rem;border-radius:.6rem;text-align:start}
+.qres button:hover,.qres button:focus-visible{background:var(--fill)}
+.qres i{width:.25rem;height:1.9rem;border-radius:2px;background:var(--c)}
+.qres b{display:block;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qres small{color:var(--sec);font-size:.75rem}.qres .n{font-weight:700;font-size:.9375rem}
+.qres p{margin:0;padding:.7rem;color:var(--sec);font-size:.875rem}
+@media (min-width:60rem){
+  .main-top .top-in{padding:1.5rem 1rem 1rem;padding-inline-start:6rem;flex-wrap:nowrap}
+  .tools{flex:0 1 32rem}
+  .rail{top:6.6rem}
+  .fab{inset-inline:auto 2rem;margin:0}
+}
+.greet{display:none}
+.gauge .amt,.sal .amt{display:block}.gauge .amt{text-align:right}
+/* the months screen keeps the same cards, with room around the words */
+#mview .top-in{max-width:44rem}
+#mlist{max-width:44rem;padding-bottom:calc(7rem + env(safe-area-inset-bottom,0px));gap:.75rem}
+#mlist .mcard{overflow:hidden}
+#mlist .mhead,#mlist .rowi,#mlist .crow,#mlist .trow,#mlist .empty{padding-inline:1.1rem}
+#mlist .rowi+.rowi::before,#mlist .crow+.crow::before,#mlist .trow+.trow::before{inset-inline:1.1rem}
+#mlist .gh{display:block;margin-inline:1.1rem}
+#mlist .foot,#mlist .note{margin-inline:.25rem}
+#mview .top h1{font-size:1.25rem}
+.mhead .bar{height:.4rem}
+.badge.now{background:var(--good-bg);color:var(--good)}
+.hero .big,.hero .big.neg{position:relative;z-index:1}
+.wave{width:32%;height:48%;opacity:.8}
+
+@media (max-width:59.99rem){.main-top .tools{display:contents}.who{flex:1;min-width:0}.search{order:3;flex:1 1 100%}.who h1{font-size:1.375rem}}
+.logo{display:grid;place-items:center}
 </style>
 </head>
 <body>
 <div class="splash" id="splash" aria-hidden="true"><div class="splash-in"><span class="splash-logo"><span data-ic="wallet"></span></span><b>תקציב</b></div></div>
-<header class="top"><div class="top-in"><h1><span class="logo" data-ic="wallet"></span>תקציב</h1><button type="button" class="mbtn press" id="mBtn"><span data-ic="cal"></span>חודשים</button></div></header>
+<header class="top main-top"><div class="top-in">
+  <div class="who"><span class="logo"><span data-ic="wallet"></span></span><div><h1 id="hello"></h1><small id="dayOf"></small></div></div>
+  <div class="tools">
+    <div class="search" role="search"><input id="q" type="search" placeholder="חיפוש הוצאה" aria-label="חיפוש הוצאה" autocomplete="off"><span class="sico"><span data-ic="search"></span></span><div class="qres" id="qRes" hidden></div></div>
+    <button type="button" class="round press" id="bell" aria-label="מה חסר החודש"><span data-ic="bell"></span><i id="bellDot" hidden></i></button>
+    <button type="button" class="mbtn press" id="mBtn"><span data-ic="cal"></span>חודשים</button>
+  </div>
+</div></header>
 
 <nav class="rail" aria-label="ניווט בעמוד"><a href="#hero" aria-label="סקירה"><span data-ic="home"></span></a><a href="#cats" aria-label="תקציב לפי סעיף"><span data-ic="pie"></span></a><a href="#salBox" aria-label="המשכורת"><span data-ic="wallet"></span></a><a href="#stackc" aria-label="מה יורד לבד"><span data-ic="card"></span></a><a href="#setBox" aria-label="הגדרות"><span data-ic="sliders"></span></a></nav>
 <main class="wrap">
-  <div class="greet"><b id="hello"></b><span id="dayOf"></span></div>
-
   <section class="hero" id="hero">
     <div class="cap" id="leftLbl">נשאר עד המשכורת הבאה</div>
     <div class="herorow"><div class="big n" id="left" aria-live="polite">…</div>
@@ -755,7 +808,7 @@ window.fetch=async(u,o)=>{o=o||{};if(typeof u!=='string'||u.indexOf('/api/')!==0
   return of(u,o)};})();
 </script>
 <script src="demo.js?v=2"></script>
-<script src="app.js?v=20"></script>
+<script src="app.js?v=21"></script>
 <script>
 (()=>{const a=document.getElementById('adIn'),d=document.getElementById('adlg'),r=document.documentElement.style;
 a.focus=function(o){if(o&&o.preventScroll)return;HTMLElement.prototype.focus.call(this,o)};
