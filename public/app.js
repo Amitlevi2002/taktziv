@@ -488,7 +488,7 @@ function openSheet(){
 }
 function closeSheet(v){
   isOpen=false; document.activeElement&&document.activeElement.blur&&sheet.contains(document.activeElement)&&document.activeElement.blur();
-  settle(sH,v==null?sv:v,false,()=>{if(!isOpen){sheet.hidden=scrim.hidden=true}});
+  settle(sH,v==null?sv:v,false,()=>{if(!isOpen){sheet.hidden=scrim.hidden=true;$('fab').focus({preventScroll:true})}});
 }
 $('fab').addEventListener('click',openSheet);
 $('cancel').addEventListener('click',()=>closeSheet());
